@@ -1,0 +1,174 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Chave da API Fogos.pt",
+        "description": "Introduza a sua chave pessoal da API Fogos.pt (`X-API-Key`). Peça uma em {api_url}.",
+        "data": {
+          "api_key": "Chave da API"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Chave da API Fogos.pt",
+        "description": "A chave da API foi rejeitada. Introduza uma chave válida (peça uma em {api_url}).",
+        "data": {
+          "api_key": "Chave da API"
+        }
+      },
+      "districts": {
+        "title": "Distritos",
+        "description": "Escolha um ou mais distritos (as ilhas aparecem como distritos). Deixe vazio para seguir o país inteiro.",
+        "data": {
+          "districts": "Distritos"
+        }
+      },
+      "concelhos": {
+        "title": "Concelhos",
+        "description": "Opcional: limitar a concelhos. Um distrito sem concelhos escolhidos é seguido por inteiro.",
+        "data": {
+          "concelhos": "Concelhos"
+        }
+      },
+      "freguesias": {
+        "title": "Freguesias",
+        "description": "Opcional: limitar a freguesias. Um concelho sem freguesias escolhidas é seguido por inteiro.",
+        "data": {
+          "freguesias": "Freguesias"
+        }
+      },
+      "warnings": {
+        "title": "Áreas de aviso IPMA",
+        "description": "Áreas de aviso meteorológico a seguir (sugeridas a partir dos locais; inclui Madeira e Açores).",
+        "data": {
+          "warning_areas": "Áreas de aviso"
+        }
+      },
+      "filters": {
+        "title": "Ocorrências e sismos",
+        "data": {
+          "kinds": "Tipos de ocorrência",
+          "seismic_region": "Sismos: região",
+          "min_magnitude": "Sismos: magnitude mínima",
+          "radius": "Sismos: distância máxima a casa (0 = qualquer)",
+          "seismic_near_selection": "Sismos: só perto dos locais escolhidos"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "A chave da API foi rejeitada.",
+      "cannot_connect": "Não foi possível contactar a API Fogos.pt."
+    },
+    "abort": {
+      "reauth_successful": "A chave da API foi atualizada."
+    }
+  },
+  "options": {
+    "step": {
+      "districts": {
+        "title": "Distritos",
+        "description": "Escolha um ou mais distritos (as ilhas aparecem como distritos). Deixe vazio para seguir o país inteiro.",
+        "data": {
+          "districts": "Distritos"
+        }
+      },
+      "concelhos": {
+        "title": "Concelhos",
+        "description": "Opcional: limitar a concelhos. Um distrito sem concelhos escolhidos é seguido por inteiro.",
+        "data": {
+          "concelhos": "Concelhos"
+        }
+      },
+      "freguesias": {
+        "title": "Freguesias",
+        "description": "Opcional: limitar a freguesias. Um concelho sem freguesias escolhidas é seguido por inteiro.",
+        "data": {
+          "freguesias": "Freguesias"
+        }
+      },
+      "warnings": {
+        "title": "Áreas de aviso IPMA",
+        "description": "Áreas de aviso meteorológico a seguir (sugeridas a partir dos locais; inclui Madeira e Açores).",
+        "data": {
+          "warning_areas": "Áreas de aviso"
+        }
+      },
+      "filters": {
+        "title": "Ocorrências e sismos",
+        "data": {
+          "kinds": "Tipos de ocorrência",
+          "seismic_region": "Sismos: região",
+          "min_magnitude": "Sismos: magnitude mínima",
+          "radius": "Sismos: distância máxima a casa (0 = qualquer)",
+          "seismic_near_selection": "Sismos: só perto dos locais escolhidos"
+        }
+      }
+    },
+    "abort": {
+      "invalid_auth": "A chave da API foi rejeitada.",
+      "cannot_connect": "Não foi possível contactar a API Fogos.pt."
+    }
+  },
+  "selector": {
+    "kinds": {
+      "options": {
+        "fire": "Incêndios rurais",
+        "urban_fire": "Incêndios urbanos / industriais",
+        "transport_fire": "Incêndios em transportes",
+        "other_fire": "Outros incêndios",
+        "fma": "Fenómenos meteorológicos adversos (FMA)",
+        "other": "Outras ocorrências"
+      }
+    },
+    "seismic_region": {
+      "options": {
+        "all": "Todas as regiões",
+        "continente": "Continente",
+        "acores": "Açores",
+        "madeira": "Madeira",
+        "none": "Não seguir sismos"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "active_fires": {
+        "name": "Incêndios ativos"
+      },
+      "other_incidents": {
+        "name": "Outras ocorrências ativas"
+      },
+      "man": {
+        "name": "Operacionais"
+      },
+      "terrain": {
+        "name": "Meios terrestres"
+      },
+      "aerial": {
+        "name": "Meios aéreos"
+      },
+      "warnings": {
+        "name": "Avisos IPMA"
+      },
+      "warning_level": {
+        "name": "Nível de aviso mais alto",
+        "state": {
+          "green": "Verde",
+          "yellow": "Amarelo",
+          "orange": "Laranja",
+          "red": "Vermelho"
+        }
+      },
+      "last_earthquake": {
+        "name": "Último sismo"
+      }
+    },
+    "binary_sensor": {
+      "fire_active": {
+        "name": "Incêndio na zona"
+      },
+      "severe_warning": {
+        "name": "Aviso laranja ou vermelho"
+      }
+    }
+  }
+}

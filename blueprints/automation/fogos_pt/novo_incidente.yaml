@@ -1,0 +1,73 @@
+blueprint:
+  name: Fogos.pt — nova ocorrência
+  description: >-
+    Notifica um telemóvel (app Home Assistant) quando surge uma nova ocorrência
+    nos locais seguidos pela integração Fogos.pt e, opcionalmente, quando muda
+    de estado.
+  domain: automation
+  source_url: https://github.com/FogosPT/fogos-pt-homeassistant/blob/main/blueprints/automation/fogos_pt/novo_incidente.yaml
+  input:
+    notify_device:
+      name: Dispositivo a notificar
+      description: Dispositivo com a app Home Assistant.
+      selector:
+        device:
+          filter:
+            - integration: mobile_app
+    only_fires:
+      name: Só incêndios
+      default: false
+      selector:
+        boolean: {}
+    status_changes:
+      name: Notificar também mudanças de estado
+      default: false
+      selector:
+        boolean: {}
+    min_man:
+      name: Mínimo de operacionais
+      description: Só notificar ocorrências com pelo menos este número de operacionais (0 = todas).
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 500
+          mode: box
+
+mode: queued
+
+triggers:
+  - trigger: event
+    event_type: fogos_pt_new_incident
+    id: new
+  - trigger: event
+    event_type: fogos_pt_incident_status_changed
+    id: status
+
+variables:
+  only_fires: !input only_fires
+  status_changes: !input status_changes
+  min_man: !input min_man
+  i: "{{ trigger.event.data }}"
+
+conditions:
+  - condition: template
+    value_template: >-
+      {{ (trigger.id == 'new' or status_changes)
+         and (not only_fires or i.is_fire)
+         and (i.man | int(0)) >= (min_man | int(0)) }}
+
+actions:
+  - domain: mobile_app
+    type: notify
+    device_id: !input notify_device
+    title: >-
+      {{ '🔥' if i.is_fire else '⚠️' }} {{ i.natureza }} — {{ i.concelho }}
+    message: >-
+      {% if trigger.id == 'status' %}{{ i.previous_status }} → {% endif %}{{ i.status }}.
+      {{ i.location }}, {{ i.freguesia }}.
+      Meios: {{ i.man }} operacionais, {{ i.terrain }} terrestres, {{ i.aerial }} aéreos.
+    data:
+      url: "{{ i.url }}"
+      clickAction: "{{ i.url }}"
+      tag: "fogos_pt_{{ i.id }}"

@@ -1,0 +1,10 @@
+{
+  "name": "Fogos.pt",
+  "homeassistant": "2025.12.0",
+  "render_readme": true,
+  "country": [
+    "PT"
+  ],
+  "zip_release": true,
+  "filename": "fogos_pt.zip"
+}

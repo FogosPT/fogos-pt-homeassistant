@@ -1,0 +1,55 @@
+blueprint:
+  name: Fogos.pt — novo aviso IPMA
+  description: >-
+    Notifica um telemóvel quando surge um aviso meteorológico do IPMA (ou o
+    nível sobe) nas áreas seguidas pela integração Fogos.pt.
+  domain: automation
+  source_url: https://github.com/FogosPT/fogos-pt-homeassistant/blob/main/blueprints/automation/fogos_pt/novo_aviso.yaml
+  input:
+    notify_device:
+      name: Dispositivo a notificar
+      selector:
+        device:
+          filter:
+            - integration: mobile_app
+    min_level:
+      name: Nível mínimo
+      default: yellow
+      selector:
+        select:
+          options:
+            - label: Amarelo
+              value: yellow
+            - label: Laranja
+              value: orange
+            - label: Vermelho
+              value: red
+
+mode: queued
+
+triggers:
+  - trigger: event
+    event_type: fogos_pt_new_warning
+
+variables:
+  min_level: !input min_level
+  ranks: {"green": 0, "yellow": 1, "orange": 2, "red": 3}
+  w: "{{ trigger.event.data }}"
+  emoji: {"yellow": "🟡", "orange": "🟠", "red": "🔴"}
+  level_name: {"yellow": "amarelo", "orange": "laranja", "red": "vermelho"}
+
+conditions:
+  - condition: template
+    value_template: "{{ ranks.get(w.level, 0) >= ranks[min_level] }}"
+
+actions:
+  - domain: mobile_app
+    type: notify
+    device_id: !input notify_device
+    title: "{{ emoji.get(w.level, '') }} Aviso {{ level_name.get(w.level, w.level) }} — {{ w.type }}"
+    message: >-
+      {{ w.area_name }}: {{ w.text }}
+      ({{ as_timestamp(w.start) | timestamp_custom('%d/%m %H:%M') }} –
+      {{ as_timestamp(w.end) | timestamp_custom('%d/%m %H:%M') }})
+    data:
+      tag: "fogos_pt_aviso_{{ w.area }}_{{ w.type }}"
