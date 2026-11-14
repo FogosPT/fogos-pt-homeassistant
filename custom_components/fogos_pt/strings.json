@@ -1,0 +1,174 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Fogos.pt API key",
+        "description": "Enter your personal Fogos.pt API key (`X-API-Key`). Request one at {api_url}.",
+        "data": {
+          "api_key": "API key"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Fogos.pt API key",
+        "description": "The API key was rejected. Enter a valid key (request one at {api_url}).",
+        "data": {
+          "api_key": "API key"
+        }
+      },
+      "districts": {
+        "title": "Districts",
+        "description": "Choose one or more districts (islands are listed as districts). Leave empty to follow the whole country.",
+        "data": {
+          "districts": "Districts"
+        }
+      },
+      "concelhos": {
+        "title": "Municipalities",
+        "description": "Optionally narrow down to municipalities. A district without chosen municipalities is followed entirely.",
+        "data": {
+          "concelhos": "Municipalities"
+        }
+      },
+      "freguesias": {
+        "title": "Parishes",
+        "description": "Optionally narrow down to parishes. A municipality without chosen parishes is followed entirely.",
+        "data": {
+          "freguesias": "Parishes"
+        }
+      },
+      "warnings": {
+        "title": "IPMA warning areas",
+        "description": "Weather warning areas to follow (suggested from your locations; Madeira and the Azores included).",
+        "data": {
+          "warning_areas": "Warning areas"
+        }
+      },
+      "filters": {
+        "title": "Incidents and earthquakes",
+        "data": {
+          "kinds": "Incident types",
+          "seismic_region": "Earthquakes: region",
+          "min_magnitude": "Earthquakes: minimum magnitude",
+          "radius": "Earthquakes: maximum distance from home (0 = any)",
+          "seismic_near_selection": "Earthquakes: only near the chosen locations"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "The API key was rejected.",
+      "cannot_connect": "Could not reach the Fogos.pt API."
+    },
+    "abort": {
+      "reauth_successful": "The API key was updated."
+    }
+  },
+  "options": {
+    "step": {
+      "districts": {
+        "title": "Districts",
+        "description": "Choose one or more districts (islands are listed as districts). Leave empty to follow the whole country.",
+        "data": {
+          "districts": "Districts"
+        }
+      },
+      "concelhos": {
+        "title": "Municipalities",
+        "description": "Optionally narrow down to municipalities. A district without chosen municipalities is followed entirely.",
+        "data": {
+          "concelhos": "Municipalities"
+        }
+      },
+      "freguesias": {
+        "title": "Parishes",
+        "description": "Optionally narrow down to parishes. A municipality without chosen parishes is followed entirely.",
+        "data": {
+          "freguesias": "Parishes"
+        }
+      },
+      "warnings": {
+        "title": "IPMA warning areas",
+        "description": "Weather warning areas to follow (suggested from your locations; Madeira and the Azores included).",
+        "data": {
+          "warning_areas": "Warning areas"
+        }
+      },
+      "filters": {
+        "title": "Incidents and earthquakes",
+        "data": {
+          "kinds": "Incident types",
+          "seismic_region": "Earthquakes: region",
+          "min_magnitude": "Earthquakes: minimum magnitude",
+          "radius": "Earthquakes: maximum distance from home (0 = any)",
+          "seismic_near_selection": "Earthquakes: only near the chosen locations"
+        }
+      }
+    },
+    "abort": {
+      "invalid_auth": "The API key was rejected.",
+      "cannot_connect": "Could not reach the Fogos.pt API."
+    }
+  },
+  "selector": {
+    "kinds": {
+      "options": {
+        "fire": "Rural fires",
+        "urban_fire": "Urban / industrial fires",
+        "transport_fire": "Transport fires",
+        "other_fire": "Other fires",
+        "fma": "Adverse weather (FMA)",
+        "other": "Other incidents"
+      }
+    },
+    "seismic_region": {
+      "options": {
+        "all": "All regions",
+        "continente": "Mainland",
+        "acores": "Azores",
+        "madeira": "Madeira",
+        "none": "Don't follow earthquakes"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "active_fires": {
+        "name": "Active fires"
+      },
+      "other_incidents": {
+        "name": "Other active incidents"
+      },
+      "man": {
+        "name": "Personnel"
+      },
+      "terrain": {
+        "name": "Ground vehicles"
+      },
+      "aerial": {
+        "name": "Aerial means"
+      },
+      "warnings": {
+        "name": "IPMA warnings"
+      },
+      "warning_level": {
+        "name": "Highest warning level",
+        "state": {
+          "green": "Green",
+          "yellow": "Yellow",
+          "orange": "Orange",
+          "red": "Red"
+        }
+      },
+      "last_earthquake": {
+        "name": "Last earthquake"
+      }
+    },
+    "binary_sensor": {
+      "fire_active": {
+        "name": "Fire in the area"
+      },
+      "severe_warning": {
+        "name": "Orange or red warning"
+      }
+    }
+  }
+}

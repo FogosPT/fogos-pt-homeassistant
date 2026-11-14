@@ -1,0 +1,50 @@
+blueprint:
+  name: Fogos.pt — novo sismo
+  description: >-
+    Notifica um telemóvel quando é registado um sismo acima da magnitude
+    mínima configurada na integração Fogos.pt (e, opcionalmente, acima de
+    outra magnitude aqui).
+  domain: automation
+  source_url: https://github.com/FogosPT/fogos-pt-homeassistant/blob/main/blueprints/automation/fogos_pt/novo_sismo.yaml
+  input:
+    notify_device:
+      name: Dispositivo a notificar
+      selector:
+        device:
+          filter:
+            - integration: mobile_app
+    min_magnitude:
+      name: Magnitude mínima
+      default: 3
+      selector:
+        number:
+          min: 0
+          max: 9
+          step: 0.1
+          mode: box
+
+mode: queued
+
+triggers:
+  - trigger: event
+    event_type: fogos_pt_new_earthquake
+
+variables:
+  min_magnitude: !input min_magnitude
+  q: "{{ trigger.event.data }}"
+
+conditions:
+  - condition: template
+    value_template: "{{ (q.magnitude | float(0)) >= (min_magnitude | float(0)) }}"
+
+actions:
+  - domain: mobile_app
+    type: notify
+    device_id: !input notify_device
+    title: "🌍 Sismo M{{ q.magnitude }} — {{ q.nearest or q.place }}"
+    message: >-
+      {{ as_timestamp(q.time) | timestamp_custom('%d/%m %H:%M') }},
+      profundidade {{ q.depth }} km{% if q.nearest_km %}, a {{ q.nearest_km }} km de {{ q.nearest }} ({{ q.nearest_municipality }}){% endif %}{% if q.distance_km %}, a {{ q.distance_km }} km de casa{% endif %}.
+      {% if q.felt %}Sentido pela população.{% endif %}
+    data:
+      tag: "fogos_pt_sismo_{{ q.id }}"
