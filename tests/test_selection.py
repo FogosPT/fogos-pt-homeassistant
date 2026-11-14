@@ -60,6 +60,11 @@ def test_default_warning_areas_follow_the_locations():
     assert default_warning_areas(AREAS, Selection.from_options({"districts": ["Porto"]})) == ["PTO"]
     assert default_warning_areas(AREAS, madeira) == ["MCN", "MCS", "MRM"]
     assert default_warning_areas(AREAS, funchal) == ["MCS", "MRM"]
+    # A municipality chosen in another district does not narrow Madeira.
+    madeira_and_amarante = Selection.from_options(
+        {"districts": ["Ilha Da Madeira", "Porto"], "concelhos": ["Porto|Amarante"]}
+    )
+    assert default_warning_areas(AREAS, madeira_and_amarante) == ["PTO", "MCN", "MCS", "MRM"]
 
 
 def test_title():

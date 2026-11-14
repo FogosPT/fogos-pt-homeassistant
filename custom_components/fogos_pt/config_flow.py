@@ -61,22 +61,25 @@ def _multi(options: list[SelectOptionDict], translation_key: str | None = None) 
 
 
 def default_warning_areas(areas: list[dict[str, Any]], selection: Selection) -> list[str]:
-    """Areas covering the selected districts (islands included) and municipalities."""
-    districts = {key(d) for d in selection.districts}
-    districts |= {key(d) for d, _ in selection.concelhos} | {key(d) for d, _, _ in selection.freguesias}
-    concelhos = {key(c) for _, c in selection.concelhos} | {key(c) for _, c, _ in selection.freguesias}
+    """Areas covering the selected districts (islands included) and municipalities.
+
+    Areas that list municipalities (Madeira island's coasts) are narrowed by
+    the municipalities chosen in that same district only: a district chosen
+    whole keeps all of its areas.
+    """
+    concelhos_by_district: dict[str, set[str]] = {}
+    for district, concelho in [*selection.concelhos, *((d, c) for d, c, _ in selection.freguesias)]:
+        concelhos_by_district.setdefault(key(district), set()).add(key(concelho))
+    districts = {key(d) for d in selection.districts} | set(concelhos_by_district)
 
     codes = []
     for area in areas:
-        area_districts = {key(d) for d in area.get("districts", [])}
         area_concelhos = {key(c) for c in area.get("concelhos", [])}
-        if not area_districts & districts:
-            continue
-        # Madeira island: only the coast of the chosen municipalities (+ MRM,
-        # which has no `concelhos` and covers the whole island).
-        if area_concelhos and concelhos and not area_concelhos & concelhos:
-            continue
-        codes.append(area["code"])
+        for district in {key(d) for d in area.get("districts", [])} & districts:
+            chosen = concelhos_by_district.get(district)
+            if not area_concelhos or not chosen or area_concelhos & chosen:
+                codes.append(area["code"])
+                break
     return codes
 
 
