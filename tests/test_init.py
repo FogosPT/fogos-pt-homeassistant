@@ -128,3 +128,27 @@ async def test_unload(hass: HomeAssistant, fake_api, config_entry) -> None:
     await hass.async_block_till_done()
 
     assert config_entry.state is ConfigEntryState.NOT_LOADED
+
+
+async def test_warnings_or_seismic_down_does_not_block_setup(hass: HomeAssistant, fake_api, config_entry) -> None:
+    """A down IPMA or seismic endpoint must not prevent fire sensors from loading."""
+    fake_api.incidents[:] = [incident("1")]
+    fake_api.warnings[:] = [warning("PTO", "orange")]
+    fake_api.quakes[:] = [quake("q1", 3.1, "2026-11-14T08:00:00Z")]
+    fake_api.status_for["/v2/warnings/ipma"] = 500
+    fake_api.status_for["/v2/warnings/ipma/areas"] = 500
+    fake_api.status_for["/v2/seismic/events/latest"] = 500
+    fake_api.register()
+
+    await _setup(hass, config_entry)
+    assert config_entry.state is ConfigEntryState.LOADED
+
+    fires = _state(hass, "sensor.fogos_pt_porto_braga_active_fires")
+    assert fires.state == "1"
+    assert _state(hass, "binary_sensor.fogos_pt_porto_braga_fire_in_the_area").state == "on"
+
+    # Warning and earthquake entities exist, but are unavailable until those APIs recover.
+    assert _state(hass, "sensor.fogos_pt_porto_braga_ipma_warnings").state == "unavailable"
+    assert _state(hass, "sensor.fogos_pt_porto_braga_highest_warning_level").state == "unavailable"
+    assert _state(hass, "binary_sensor.fogos_pt_porto_braga_orange_or_red_warning").state == "unavailable"
+    assert _state(hass, "sensor.fogos_pt_porto_braga_last_earthquake").state == "unavailable"

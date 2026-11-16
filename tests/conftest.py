@@ -152,18 +152,35 @@ class FakeApi:
         self.warnings: list[dict[str, Any]] = []
         self.quakes: list[dict[str, Any]] = []
         self.status = 200
+        self.status_for: dict[str, int] = {}
         self.register()
+
+    def _status(self, path: str) -> int:
+        return self.status_for.get(path, self.status)
 
     def register(self) -> None:
         self.mock.clear_requests()
         self.mock._mocks.clear()
-        status = self.status
-        self.mock.get(f"{API}/v2/incidents/locations", status=status, json={"success": True, "data": LOCATIONS})
-        self.mock.get(f"{API}/v2/warnings/ipma/areas", status=status, json={"success": True, "data": AREAS})
-        self.mock.get(f"{API}/v2/incidents/active", status=status, json={"success": True, "data": self.incidents})
-        self.mock.get(f"{API}/v2/warnings/ipma", status=status, json=self.warnings)
         self.mock.get(
-            f"{API}/v2/seismic/events/latest", status=status, json={"success": True, "data": self.quakes}
+            f"{API}/v2/incidents/locations",
+            status=self._status("/v2/incidents/locations"),
+            json={"success": True, "data": LOCATIONS},
+        )
+        self.mock.get(
+            f"{API}/v2/warnings/ipma/areas",
+            status=self._status("/v2/warnings/ipma/areas"),
+            json={"success": True, "data": AREAS},
+        )
+        self.mock.get(
+            f"{API}/v2/incidents/active",
+            status=self._status("/v2/incidents/active"),
+            json={"success": True, "data": self.incidents},
+        )
+        self.mock.get(f"{API}/v2/warnings/ipma", status=self._status("/v2/warnings/ipma"), json=self.warnings)
+        self.mock.get(
+            f"{API}/v2/seismic/events/latest",
+            status=self._status("/v2/seismic/events/latest"),
+            json={"success": True, "data": self.quakes},
         )
 
 
